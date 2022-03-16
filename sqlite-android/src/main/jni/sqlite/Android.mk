@@ -1,6 +1,18 @@
 LOCAL_PATH:= $(call my-dir)
-include $(CLEAR_VARS)
 
+include $(CLEAR_VARS)
+LOCAL_MODULE := ssl
+LOCAL_SRC_FILES := libs/openssl/$(TARGET_ARCH_ABI)/lib/libssl.a
+LOCAL_EXPORT_CFLAGS := -I$(LOCAL_PATH)/libs/openssl/$(TARGET_ARCH_ABI)/include
+include $(PREBUILT_STATIC_LIBRARY)
+
+include $(CLEAR_VARS)
+LOCAL_MODULE := crypto
+LOCAL_SRC_FILES := libs/openssl/$(TARGET_ARCH_ABI)/lib/libcrypto.a
+LOCAL_EXPORT_CFLAGS := -I$(LOCAL_PATH)/libs/openssl/$(TARGET_ARCH_ABI)/include
+include $(PREBUILT_STATIC_LIBRARY)
+
+include $(CLEAR_VARS)
 # NOTE the following flags,
 #   SQLITE_TEMP_STORE=3 causes all TEMP files to go into RAM. and thats the behavior we want
 #   SQLITE_ENABLE_FTS3   enables usage of FTS3 - NOT FTS1 or 2.
@@ -26,6 +38,7 @@ sqlite_flags := \
 	-DSQLITE_ENABLE_RTREE=1 \
 	-DSQLITE_UNTESTABLE \
 	-DSQLITE_OMIT_COMPILEOPTION_DIAGS \
+	-DSQLITE_DIGEST_STANDALONE \
 	-DSQLITE_DEFAULT_FILE_PERMISSIONS=0600 \
     -DSQLITE_DEFAULT_MEMSTATUS=0 \
     -DSQLITE_MAX_EXPR_DEPTH=0 \
@@ -56,12 +69,13 @@ LOCAL_SRC_FILES:= \
 	JNIHelp.cpp \
 	JNIString.cpp
 
+LOCAL_SRC_FILES += digest.c
 LOCAL_SRC_FILES += sqlite3.c
 
 LOCAL_C_INCLUDES += $(LOCAL_PATH)
 
 LOCAL_MODULE:= libsqlite3x
-LOCAL_LDLIBS += -ldl -llog -latomic
+LOCAL_STATIC_LIBRARIES := libssl libcrypto
+LOCAL_LDLIBS += -ldl -llog # -latomic
 
 include $(BUILD_SHARED_LIBRARY)
-
