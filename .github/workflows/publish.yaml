@@ -7,9 +7,9 @@ name: Publish package to GitHub Packages
 on:
   release:
     types: [created]
-  push:
-    branches:
-      - master
+#  push:
+#    branches:
+#      - master
 jobs:
   publish:
     runs-on: ubuntu-latest

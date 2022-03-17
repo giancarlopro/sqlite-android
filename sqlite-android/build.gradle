@@ -1,12 +1,13 @@
 plugins {
     id 'de.undercouch.download' version '4.1.1'
+    id("maven-publish")
 }
 
 apply plugin: 'com.android.library'
 apply plugin: 'maven-publish'
 apply plugin: 'de.undercouch.download'
 
-group = 'io.requery'
+group = 'com.github.giancarlopro'
 version = '3.37.2'
 description = 'Android SQLite compatibility library'
 
@@ -70,14 +71,14 @@ ext {
     sqliteDistributionUrl = 'https://sqlite.org/2022/sqlite-amalgamation-3380100.zip'
 
     pomXml = {
-        resolveStrategy = DELEGATE_FIRST
+//        resolveStrategy = DELEGATE_FIRST
         name project.name
         description project.description
-        url 'https://github.com/requery/sqlite-android'
+        url 'https://github.com/giancarlopro/sqlite-android'
         scm {
-            url 'https://github.com/requery/sqlite-android.git'
-            connection 'scm:git:git://github.com/requery/sqlite-android.git'
-            developerConnection 'scm:git:git@github.com/requery/sqlite-android.git'
+            url 'https://github.com/giancarlopro/sqlite-android.git'
+            connection 'scm:git:git://github.com/giancarlopro/sqlite-android.git'
+            developerConnection 'scm:git:git@github.com/giancarlopro/sqlite-android.git'
         }
         licenses {
             license {
@@ -147,32 +148,30 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     from javadoc.destinationDir
 }
 
-//publishing {
-//    publications {
-//        maven(MavenPublication) {
-//            groupId project.group
-//            artifactId project.name
-//            version project.version
-//            artifact "build/outputs/aar/${project.name}-release.aar"
-//            artifact sourceJar
-//            artifact javadocJar
-//            pom.withXml {
-//                asNode().children().last() + project.pomXml
-//                def dependencies = asNode().appendNode('dependencies')
-//                configurations.compile.allDependencies.all {
-//                    def dependency = dependencies.appendNode('dependency')
-//                    dependency.appendNode('groupId', it.group)
-//                    dependency.appendNode('artifactId', it.name)
-//                    dependency.appendNode('version', it.version)
-//                    dependency.appendNode('scope', 'compile')
-//                }
-//            }
-//        }
+// gradlew :app:comp to show components names
+//task comps {
+//    afterEvaluate {
+//        println("Components: " + components*.name)
 //    }
 //}
-//
 
 publishing {
+    publications {
+        grp(MavenPublication) {
+            artifactId project.name
+
+            afterEvaluate {
+                from components.release
+            }
+
+            groupId project.group
+            version project.version
+
+            artifact sourceJar
+            artifact javadocJar
+        }
+    }
+
     repositories {
         maven {
             name = "GitHubPackages"
@@ -186,3 +185,4 @@ publishing {
 }
 
 publish.dependsOn "assembleRelease"
+publish.dependsOn "bundleReleaseAar"
