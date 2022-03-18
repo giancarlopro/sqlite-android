@@ -20,6 +20,7 @@ include $(CLEAR_VARS)
 sqlite_flags := \
 	-DNDEBUG=1 \
 	-DHAVE_USLEEP=1 \
+	-DSQLITE_CORE \
 	-DSQLITE_HAVE_ISNAN \
 	-DSQLITE_DEFAULT_JOURNAL_SIZE_LIMIT=1048576 \
 	-DSQLITE_THREADSAFE=2 \
@@ -69,13 +70,24 @@ LOCAL_SRC_FILES:= \
 	JNIHelp.cpp \
 	JNIString.cpp
 
-LOCAL_SRC_FILES += digest.c
 LOCAL_SRC_FILES += sqlite3.c
+#LOCAL_SRC_FILES += digest.c
 
 LOCAL_C_INCLUDES += $(LOCAL_PATH)
 
 LOCAL_MODULE:= libsqlite3x
 LOCAL_STATIC_LIBRARIES := libssl libcrypto
-LOCAL_LDLIBS += -ldl -llog # -latomic
+LOCAL_LDLIBS += -ldl -llog -latomic
+include $(BUILD_SHARED_LIBRARY)
 
+include $(CLEAR_VARS)
+LOCAL_MODULE := digest
+LOCAL_SRC_FILES := digest.c
+LOCAL_STATIC_LIBRARIES := libssl libcrypto
+LOCAL_CFLAGS := \
+	-fPIC \
+	-Wall \
+	-pedantic \
+	-lcrypto \
+	-DSQLITE_DIGEST_STANDALONE
 include $(BUILD_SHARED_LIBRARY)

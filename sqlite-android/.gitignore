@@ -1,10 +1,6 @@
 /build
 /src/main/jniLibs
 /src/main/jni/sqlite/libs
-/src/main/jni/sqlite/sqlite3.h
-/src/main/jni/sqlite/sqlite3ext.h
-/src/main/jni/sqlite/sqlite3.c
-/src/main/jni/sqlite/shell.c
 /src/main/jni/sqlite.zip
 /src/main/jni/openssl.zip
 /src/main/obj
