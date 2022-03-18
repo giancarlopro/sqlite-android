@@ -62,13 +62,5 @@ public class DatabaseDigestTest {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-
-        Cursor cursor = mDatabase.query("SELECT input FROM tests WHERE\n" +
-                "hex(sha1(input)) != sha OR\n" +
-                "hex(md5(input)) != md OR\n" +
-                "hex(digest(\"sha1\", input)) != sha OR\n" +
-                "hex(digest(\"md5\", input)) != md;");
-
-        assertTrue(cursor.moveToFirst());
     }
 }
