@@ -8,7 +8,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'de.undercouch.download'
 
 group = 'com.github.giancarlopro'
-version = '3.37.3'
+version = '3.37.4'
 description = 'Android SQLite compatibility library'
 
 android {
